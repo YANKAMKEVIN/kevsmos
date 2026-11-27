@@ -71,15 +71,13 @@ def detourer(img):
     # dernière passe : à moins de 3 px de la transparence, un pixel resté presque magenta est du fond
     d2 = np.sqrt((255 - a[..., 0]) ** 2 + a[..., 1] ** 2 + (255 - a[..., 2]) ** 2)
     transp = Image.fromarray(((alpha < 0.5) * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(7))
-    alpha = np.where((np.asarray(transp) > 0) & (d2 < 80), 0.0, alpha)
-    # puis, sur 2 px de bord, les mélanges sujet + magenta (r ≈ b, tous deux au-dessus de g) sont ramenés au gris
+    alpha = np.where((np.asarray(transp) > 0) & (d2 < 80) & (np.abs(a[..., 0] - a[..., 2]) < 30), 0.0, alpha)
+    # puis, sur 2 px de bord, les mélanges sujet + magenta (r ≈ b, tous deux nettement au-dessus de g)
+    # deviennent transparents : les griser laisserait un contour sombre sur fond clair
     bande = (np.asarray(Image.fromarray(((alpha < 0.5) * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(5))) > 0) & (alpha >= 0.5)
     sp = np.minimum(a[..., 0], a[..., 2]) - a[..., 1]
-    # (et partout, les mélanges franchement magenta : g < 35 % de min(r, b), r ≈ b — un vrai rose a r - b > 30)
-    franc = (np.abs(a[..., 0] - a[..., 2]) < 30) & (a[..., 1] < 0.35 * np.minimum(a[..., 0], a[..., 2])) & (sp > 40)
-    mel = (bande & (np.abs(a[..., 0] - a[..., 2]) < 30) & (sp > 8)) | (franc & (alpha >= 0.5))
-    a[..., 0] = np.where(mel, a[..., 0] - sp, a[..., 0])
-    a[..., 2] = np.where(mel, a[..., 2] - sp, a[..., 2])
+    mel = bande & (np.abs(a[..., 0] - a[..., 2]) < 30) & (sp > 25)
+    alpha = np.where(mel, 0.0, alpha)
     # sous les pixels transparents, remplace le magenta par la couleur du sujet voisin :
     # sinon le sous-échantillonnage des couleurs du WebP fait baver un liseré rose sur le bord
     poids = (alpha > 0.5).astype(np.float32)
@@ -117,9 +115,10 @@ def main():
         if not src.exists(): print("absent", src); continue
         w, h = map(int, im["taille"].split("x"))
         img = cover(Image.open(src).convert("RGB"), w, h)
+        # détourer d'abord : fondre les bords avant mélangerait le magenta au sujet
+        if im.get("detourer"): img = detourer(img)
         bande = im.get("raccord") or RACCORD.get(im["fichier"])
         if bande: img = raccorder(img, int(bande))
-        if im.get("detourer"): img = detourer(img)
         dst = Path(sortie) / im.get("sortie", f"{im['fichier']}.webp")
         dst.parent.mkdir(parents=True, exist_ok=True)
         if dst.suffix == ".png": img.save(dst, "PNG", optimize=True)
