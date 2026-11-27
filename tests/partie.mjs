@@ -29,6 +29,12 @@ const fails = [];
 const check = (ok, msg) => { console.log(`${ok ? 'OK   ' : 'ÉCHEC'} ${msg}`); if (!ok) fails.push(msg); };
 
 /** Nouvelle page à la date fixe, orbites servies localement, polices coupées (hors ligne). */
+/** Capture pour l'archive de la CI : une capture lente (WebGL logiciel) est signalée, elle ne fait pas échouer la partie. */
+async function capture(pg, name) {
+  try { await pg.screenshot({ path: `${OUT}/${name}.png`, timeout: 60000 }); }
+  catch (e) { console.log(`NOTE  capture ${name} ignorée (${String(e.message || e).split('\n')[0]})`); }
+}
+
 async function open(ctx) {
   const page = await ctx.newPage();
   await page.clock.setFixedTime(WHEN);
@@ -70,7 +76,7 @@ try {
   await page.locator('#results .it').first().click(); await sleep(1500);
   check(await page.locator('#sheet h2').innerText() === 'Orion' && /chasseur/.test(await page.locator('#sheet p').innerText()), 'fiche d\'Orion avec son histoire');
   check(await page.evaluate(() => __ks.etat.sel && __ks.etat.sel.id === 'Ori' && __ks.etat.aim === null), 'la caméra s\'est tournée vers Orion');
-  await page.screenshot({ path: `${OUT}/partie-orion.png` });
+  await capture(page, 'partie-orion');
   await page.click('#x');
 
   // viser la planète la plus brillante au-dessus de l'horizon, puis la toucher à l'écran
@@ -111,7 +117,7 @@ try {
   check(await page.evaluate(() => __ks.etat.playing && __ks.etat.offset > -3600000), 'le temps accélère');
   await page.click('#tNow');
   check(await page.evaluate(() => __ks.etat.offset === 0 && !__ks.etat.playing), 'retour à maintenant');
-  await page.screenshot({ path: `${OUT}/partie-douala.png` });
+  await capture(page, 'partie-douala');
   check(page.errors.length === 0, `aucune erreur (${page.errors.slice(0, 3).join(' | ')})`);
 
   // rechargement
@@ -146,7 +152,7 @@ try {
   const box = await tel.locator('#pSearch').boundingBox();
   check(box && box.x >= 0 && box.x + box.width <= 321, 'iPhone SE : panneau de recherche dans l\'écran');
   check(await tel.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'iPhone SE : pas de défilement horizontal');
-  await tel.screenshot({ path: `${OUT}/partie-iphone.png` });
+  await capture(tel, 'partie-iphone');
   check(tel.errors.length === 0, `iPhone SE : aucune erreur (${tel.errors.slice(0, 3).join(' | ')})`);
   await tctx.close();
 } finally {
