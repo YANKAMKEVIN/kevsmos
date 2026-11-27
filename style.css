@@ -76,7 +76,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--ice);outline-of
 .note a{color:var(--ice)}
 #toast{position:fixed;left:50%;top:calc(var(--st) + 66px);transform:translate(-50%,-20px);opacity:0;transition:.3s;border-radius:18px;padding:10px 16px;font-size:14px;max-width:min(92vw,460px);text-align:center;pointer-events:none;z-index:9}
 #toast.show{opacity:1;transform:translate(-50%,0)}
-#intro{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;justify-content:flex-end;padding:calc(var(--st) + 24px) max(6vw,22px) calc(var(--sb) + 32px);background:radial-gradient(120% 70% at 50% 110%,rgba(30,60,120,.55),transparent 60%),linear-gradient(to top,rgba(4,6,13,.94),rgba(4,6,13,.62) 65%,rgba(4,6,13,.3)),url(art/titre.webp) center/cover no-repeat;transition:opacity .6s}
+#intro{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;justify-content:flex-end;padding:calc(var(--st) + 24px) max(6vw,22px) calc(var(--sb) + 32px);background:linear-gradient(to right,rgba(4,6,13,.82),rgba(4,6,13,.35) 55%,rgba(4,6,13,0) 80%),linear-gradient(to top,rgba(4,6,13,.55),rgba(4,6,13,0) 45%),url(art/titre.webp) center/cover no-repeat #04060d;transition:opacity .6s}
 #intro.gone{opacity:0;pointer-events:none}
 #intro h1{font-family:Syne,sans-serif;font-weight:800;font-size:clamp(34px,12.5vw,120px);line-height:.9;margin:0;letter-spacing:-.02em;text-shadow:0 0 40px rgba(143,230,255,.35)}
 #intro h1 b{color:var(--ice)}

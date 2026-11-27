@@ -23,6 +23,12 @@ Les modules JavaScript ne s'ouvrent pas en `file://` : lancez `npm start` puis o
 - `src/astro.js` et `src/catalog.js` : calculs du ciel et catalogue, sans DOM ni WebGL, testés sous Node. `src/scene.js` : rendu WebGL ; `src/labels.js`, `src/controls.js`, `src/pick.js`, `src/search.js`, `src/panels.js`, `src/timebar.js`, `src/sats.js` : interface.
 - Typage `// @ts-check` et JSDoc, vérifié par `npm run types` (TypeScript strict).
 
+## Visuels
+
+Les 13 visuels du dossier `art/` ont été peints avec Codex (prompts dans `tools/art/prompts.json`) :
+la nuit sous la Voie lactée de l'accueil, et une image pour la fiche du Soleil, de la Lune, des 7 planètes,
+de l'ISS, des étoiles et des objets de Messier (`src/art.js`). Le ciel lui-même reste calculé et dessiné en WebGL.
+
 ## Sauvegarde
 
 Le lieu et les calques sont gardés dans `localStorage`, clé `kevsmos.sauvegarde`, avec un numéro de version. Une sauvegarde abîmée ou venant d'une version plus récente est mise de côté (`kevsmos.sauvegarde.abimee`) et l'appli repart des valeurs par défaut. L'ancien format (`kevsmos.place`, `kevsmos.layers`) est repris une fois puis effacé. Les orbites des satellites sont gardées 6 heures en cache (`kevsmos.tle`).
