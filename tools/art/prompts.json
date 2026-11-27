@@ -1,0 +1,84 @@
+{
+ "style": "Illustration astronomique réaliste et spectaculaire, façon planche de musée ou de livre d'astronomie haut de gamme : détails scientifiquement crédibles, lumière du Soleil venant de la gauche, couleurs riches mais naturelles. Aucun texte, aucun logo, aucune lettre, aucune signature, aucun filigrane.",
+ "fond_detourage": "Sujet seul, entier, centré, avec une petite marge, sur un fond uni magenta pur #FF00FF sans dégradé, sans étoiles ni halo sur le fond, pour être détouré ensuite.",
+ "images": [
+  {
+   "fichier": "titre",
+   "taille": "1920x1080",
+   "detourer": false,
+   "prompt": "Écran d'accueil d'un planétarium de poche : la nuit, une personne vue de dos, assise sur une colline herbeuse d'Afrique centrale avec quelques palmiers et un baobab en silhouette, lève son téléphone vers un ciel immense : la Voie lactée traverse tout le ciel en diagonale, des milliers d'étoiles, Jupiter brillante, un croissant de Lune bas sur l'horizon. Bleu nuit profond, violets et ors. Garder le centre et le tiers haut sombres et calmes pour poser le titre et les boutons."
+  },
+  {
+   "fichier": "soleil",
+   "taille": "512x512",
+   "detourer": true,
+   "prompt": "Le Soleil : sphère incandescente orange et jaune, granulation de surface, quelques taches solaires, protubérances en bord de disque."
+  },
+  {
+   "fichier": "lune",
+   "taille": "512x512",
+   "detourer": true,
+   "prompt": "La Lune pleine aux trois quarts éclairée : mers sombres, cratère Tycho et ses rayons, relief détaillé, gris naturel."
+  },
+  {
+   "fichier": "mercure",
+   "taille": "512x512",
+   "detourer": true,
+   "prompt": "La planète Mercure : sphère grise et brune criblée de cratères, éclairée de côté."
+  },
+  {
+   "fichier": "venus",
+   "taille": "512x512",
+   "detourer": true,
+   "prompt": "La planète Vénus : sphère couverte d'épais nuages jaune pâle et crème aux volutes douces."
+  },
+  {
+   "fichier": "mars",
+   "taille": "512x512",
+   "detourer": true,
+   "prompt": "La planète Mars : sphère rouille, Valles Marineris, calotte polaire blanche, volcans d'Olympus Mons."
+  },
+  {
+   "fichier": "jupiter",
+   "taille": "512x512",
+   "detourer": true,
+   "prompt": "La planète Jupiter : bandes nuageuses crème, beige et brun, la Grande Tache rouge bien visible."
+  },
+  {
+   "fichier": "saturne",
+   "taille": "512x512",
+   "detourer": true,
+   "prompt": "La planète Saturne avec ses anneaux larges et détaillés, inclinés, globe doré pâle aux bandes douces."
+  },
+  {
+   "fichier": "uranus",
+   "taille": "512x512",
+   "detourer": true,
+   "prompt": "La planète Uranus : sphère bleu-vert pâle et lisse, fins anneaux presque verticaux."
+  },
+  {
+   "fichier": "neptune",
+   "taille": "512x512",
+   "detourer": true,
+   "prompt": "La planète Neptune : sphère bleu profond, bandes de nuages blancs, une grande tache sombre."
+  },
+  {
+   "fichier": "iss",
+   "taille": "512x512",
+   "detourer": true,
+   "prompt": "La Station spatiale internationale : grands panneaux solaires dorés, modules blancs, vue de trois quarts, nette et détaillée."
+  },
+  {
+   "fichier": "etoile",
+   "taille": "512x512",
+   "detourer": true,
+   "prompt": "Une étoile vue de près dans l'espace : boule de lumière blanche-bleutée éblouissante avec de longs rayons de diffraction fins, halo doux."
+  },
+  {
+   "fichier": "nebuleuse",
+   "taille": "512x512",
+   "detourer": false,
+   "prompt": "Une nébuleuse et un amas d'étoiles typiques du catalogue de Messier : nuages de gaz rose et bleu, étoiles jeunes brillantes, sur fond d'espace noir."
+  }
+ ]
+}

@@ -56,6 +56,9 @@ try {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, timezoneId: 'Europe/Paris' });
   let page = await open(ctx);
   check(/^v\d+\.\d+\.\d+$/.test(await page.locator('#ver').innerText()), 'numéro de version sur l\'accueil');
+  await page.waitForFunction(() => __ks.art !== undefined, null, { timeout: 10000 });
+  check(await page.evaluate(() => __ks.art) === 13, 'les 13 visuels peints sont chargés (accueil, astres)');
+  check((await page.locator('#intro').evaluate(e => getComputedStyle(e).backgroundImage)).includes('titre.webp'), 'tableau peint sous l\'accueil');
   check(await page.locator('#placeName').innerText() === 'Paris', 'lieu par défaut selon le fuseau : Paris');
   await page.click('#goTouch'); await sleep(900);
   check(await page.evaluate(() => document.getElementById('intro').classList.contains('gone')), 'explorer au doigt');
