@@ -10,6 +10,7 @@ import { LAYERS, geolocate } from './panels.js';
 import { describe } from './catalog.js';
 import { syncSlider, updClock } from './timebar.js';
 import { loadSats } from './sats.js';
+import { loadArt } from './art.js';
 import { drawGuide, drawLabels, hud, screenOf } from './labels.js';
 
 fetch('data/sky.json').then(r=>r.json()).then(d=>{etat.DATA=d;build()}).catch(e=>{toast('Impossible de charger le catalogue d’étoiles.')});
@@ -43,3 +44,5 @@ $('#goCompass').onclick=async()=>{endIntro();geolocate(true);await startCompass(
 $('#ver').textContent='v'+VERSION;
 /** Accès pour les tests de bout en bout. */
 Object.assign(window,{__ks:{etat,BODIES,LAYERS,describe,altAz,screenOf}});
+// visuels peints (accueil, astres) : les fiches les montrent dès qu'ils sont là
+loadArt().then(n=>{/** @type {any} */ (window).__ks.art=n});

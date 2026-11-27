@@ -1,4 +1,5 @@
 // @ts-check
+import { art, artFor } from './art.js';
 /** Toucher un astre : choix, fiche descriptive, visée. */
 import { prefs, persist } from './save.js';
 import { $, A, R2D, V3, esc, toast } from './util.js';
@@ -15,7 +16,8 @@ export function pick(x,y){const d=dirFromScreen(x,y),thr=etat.fov*.05;let best=n
   if(!best){const e=d.clone().applyMatrix4(Minv);let ra=Math.atan2(e.y,e.x)*R2D;ra=(ra+360)%360;const dec=Math.asin(e.z)*R2D;const ci=A.Constellation(ra/15,dec);best=etat.consById[ci.symbol]?{...etat.consById[ci.symbol],type:'cons'}:null}
   if(best)select(best)}
 export function select(o){etat.sel=o;const {title,kind,text,facts}=describe(o);
-  $('#sheetBody').innerHTML=`<h2>${esc(title)}</h2><div class="kind">${esc(kind)}</div><p>${esc(text)}</p><div class="facts">${facts}</div><div class="acts"><button class="btn" id="aimB">${etat.mode==='compass'?'Me guider':'Viser'}</button></div>`;
+  const pic=art(artFor(o)||'');
+  $('#sheetBody').innerHTML=`${pic?`<img class="art" src="${pic.src}" alt="">`:''}<h2>${esc(title)}</h2><div class="kind">${esc(kind)}</div><p>${esc(text)}</p><div class="facts">${facts}</div><div class="acts"><button class="btn" id="aimB">${etat.mode==='compass'?'Me guider':'Viser'}</button></div>`;
   $('#aimB').onclick=()=>aimAt(o);
   $('#sheet').classList.add('open');
   if(o.type==='cons')showConsLines(o.id);else showConsLines(o.c||null);
