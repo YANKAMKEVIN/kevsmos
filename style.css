@@ -86,3 +86,5 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--ice);outline-of
 #intro .note{margin-top:14px;max-width:44ch}
 @media (min-width:700px){#intro{justify-content:center}}
 #intro .ver{margin-top:14px;font-size:11px;opacity:.5;letter-spacing:.06em}
+.nogl #intro .acts{display:none}
+.nogl #intro .note{color:#ffd6a8;max-width:40ch}

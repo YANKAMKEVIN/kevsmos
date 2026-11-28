@@ -25,7 +25,7 @@ export function addSatLabel(s){s.label=addLabel(s.short,'sat',()=>s.world,s)}
 /* ---------- Boucle ---------- */
 export const guide=$('#guide'),ring=$('#ring'),hud=$('#hud');
 const _p=new V3();
-export function screenOf(w){_p.copy(w).project(camera);const front=camDir().dot(w)>0;return{x:(_p.x+1)/2*innerWidth,y:(1-_p.y)/2*innerHeight,front}}
+export function screenOf(w){const front=camDir().dot(w)>0;_p.copy(w).project(camera);return{x:(_p.x+1)/2*innerWidth,y:(1-_p.y)/2*innerHeight,front}}
 export function drawLabels(){const cd=camDir();const showN=LAYERS.names;
   for(const L of LBL){let ok=true;if(L.cls==='cons')ok=showN&&LAYERS.lines&&(L.rank<=2||etat.fov<45);else if(L.cls==='star'||L.cls==='dso')ok=showN&&(L.cls!=='dso'||etat.fov<60);else if(L.cls==='sat')ok=LAYERS.sats&&L.obj.vis;
     let w=ok&&L.getWorld();if(ok&&w){const dot=cd.dot(w);if(dot<Math.cos((etat.fov*.5+20)*D2R))ok=false;

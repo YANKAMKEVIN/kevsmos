@@ -7,10 +7,11 @@ import { parseCatalog } from './catalog.js';
 import { makeLabels } from './labels.js';
 import { buildSearch } from './search.js';
 import { LAYERS } from './panels.js';
+import { pixelRatio } from './loop.js';
 
 /* ---------- Scène ---------- */
 export const canvas=$('#c'),renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
-const PR=Math.min(devicePixelRatio||1,2);
+const PR=pixelRatio(devicePixelRatio,typeof matchMedia==='function'&&matchMedia('(pointer: coarse)').matches);
 renderer.setPixelRatio(PR);
 export const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(70,1,.01,200);
 const sky=new THREE.Group();
@@ -139,7 +140,7 @@ function updateBodies(t){
   const pa=pGeo.attributes.position.array,sa=pGeo.attributes.aS.array;
   computeBodies(t);
   BODIES.forEach((b,i)=>{
-    if(i>=2){const j=i-2;pa.set(b.world.clone().multiplyScalar(40).toArray(),j*3);sa[j]=Math.max(4,Math.min(24,10-2.6*b.mag))}});
+    if(i>=2){const j=i-2;pa[j*3]=b.world.x*40;pa[j*3+1]=b.world.y*40;pa[j*3+2]=b.world.z*40;sa[j]=Math.max(4,Math.min(24,10-2.6*b.mag))}});
   pGeo.attributes.position.needsUpdate=true;pGeo.attributes.aS.needsUpdate=true;
   etat.sunWorld.copy(BODIES[0].world);bgMat.uniforms.uSun.value.copy(etat.sunWorld);groundMat.uniforms.uSun.value.copy(etat.sunWorld);
   const day=Math.min(1,Math.max(0,(etat.sunWorld.y+.12)/.2));starMat.uniforms.uDay.value=Math.pow(day,.7)*.97;ptMat.uniforms.uDay.value=day;moonMat.uniforms.uDay.value=day;
@@ -150,7 +151,7 @@ export function showConsLines(id){if(etat.selLines){sky.remove(etat.selLines);et
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(lp,3));etat.selLines=new THREE.LineSegments(g,selLineMat);etat.selLines.frustumCulled=false;etat.selLines.renderOrder=25;sky.add(etat.selLines)}
 export function updateSats(date){if(!etat.sats.length){sGeo.setDrawRange(0,0);return}if((etat.satFrame++)%2)return;const s=sunEci(date),pa=sGeo.attributes.position.array,la=sGeo.attributes.aL.array;let n=0;
   for(const o of etat.sats){const l=satLook(o,date);o.vis=null;if(!l||l.el<-.02||!LAYERS.sats)continue;o.lit=litBySun(l.p,s);o.h=l.h;o.vis=true;
-    o.world.set(Math.sin(l.az)*Math.cos(l.el),Math.sin(l.el),-Math.cos(l.az)*Math.cos(l.el));if(!o.main&&!o.lit)continue;pa.set(o.world.clone().multiplyScalar(40).toArray(),n*3);la[n]=o.main?(o.lit?2:1.6):1;n++}
+    o.world.set(Math.sin(l.az)*Math.cos(l.el),Math.sin(l.el),-Math.cos(l.az)*Math.cos(l.el));if(!o.main&&!o.lit)continue;pa[n*3]=o.world.x*40;pa[n*3+1]=o.world.y*40;pa[n*3+2]=o.world.z*40;la[n]=o.main?(o.lit?2:1.6):1;n++}
   sGeo.setDrawRange(0,n);sGeo.attributes.position.needsUpdate=true;sGeo.attributes.aL.needsUpdate=true}
 export function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}
 addEventListener('resize',resize);

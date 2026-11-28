@@ -2,7 +2,7 @@
 /** Petits outils : raccourci $, bibliothèques (Astronomy Engine, three.js), textes, échappement, message. */
 
 /** Version de l'appli, affichée sur l'accueil. */
-export const VERSION='1.1.0';
+export const VERSION='1.2.0';
 /** @type {(s:string)=>any} */
 export const $=s=>document.querySelector(s), A=Astronomy, D2R=Math.PI/180, R2D=180/Math.PI, V3=THREE.Vector3;
 export const TXT=globalThis.KEV_TXT||{cons:{},stars:{},bodies:{},dso:{}};
