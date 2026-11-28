@@ -37,7 +37,9 @@ export function satLook(s,date){const pv=satellite.propagate(s.rec,date);if(!pv|
   const la=satellite.ecfToLookAngles({longitude:etat.obs.longitude*D2R,latitude:etat.obs.latitude*D2R,height:.05},ecf);return{az:la.azimuth,el:la.elevation,p:pv.position,h:Math.hypot(pv.position.x,pv.position.y,pv.position.z)-6371}}
 export function sunEci(date){const v=A.GeoVector('Sun',A.MakeTime(date),true);const n=Math.hypot(v.x,v.y,v.z);return{x:v.x/n,y:v.y/n,z:v.z/n}}
 export function litBySun(p,s){const d=p.x*s.x+p.y*s.y+p.z*s.z;if(d>0)return true;const px=p.x-d*s.x,py=p.y-d*s.y,pz=p.z-d*s.z;return Math.hypot(px,py,pz)>6371}
-export function computePass(){const iss=etat.sats.find(s=>s.key==='iss');if(!iss)return;const t0=Date.now();
+/** Prochain passage visible de l'ISS dans les 24 h après t0 (au moins 10° de haut, ciel de nuit, station éclairée) -> etat.satPass.
+ * @param {number} [t0] instant de départ (ms) */
+export function computePass(t0=Date.now()){const iss=etat.sats.find(s=>s.key==='iss');if(!iss){etat.satPass=null;return}
   for(let k=0;k<24*180;k++){const d=new Date(t0+k*20000);const l=satLook(iss,d);if(!l||l.el<10*D2R)continue;const t=A.MakeTime(d);const sh=A.Horizon(t,etat.obs,...(e=>[e.ra,e.dec])(A.Equator('Sun',t,etat.obs,true,true)));if(sh.altitude>-6)continue;if(!litBySun(l.p,sunEci(d)))continue;
     etat.satPass={t:d,dir:'vers le '+dirName(l.az*R2D)};return}etat.satPass=null}
 

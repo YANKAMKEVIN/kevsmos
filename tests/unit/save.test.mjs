@@ -58,3 +58,40 @@ test('cache des orbites : lu s\'il est intact, ignoré sinon', () => {
   st.setItem(TLE_KEY, '{"t":"hier"}'); assert.equal(readTle(st), null);
   st.setItem(TLE_KEY, 'abîmé'); assert.equal(readTle(st), null);
 });
+
+test('stockage plein : l\'écriture échoue proprement, la lecture marche toujours', () => {
+  const st = memStore(); st.setItem = () => { throw new DOMException('plein', 'QuotaExceededError'); };
+  assert.equal(write(st, defaults()), false);
+  assert.deepEqual(load(st), defaults());
+});
+
+test('sauvegarde d\'une version plus récente : mise de côté au chargement, jamais écrasée en silence', () => {
+  const future = JSON.stringify({ ...defaults(), version: SAVE_VERSION + 1, nouveau: true });
+  const st = memStore({ [KEY]: future });
+  assert.deepEqual(load(st), defaults());
+  assert.equal(st.getItem(KEY + '.abimee'), future);
+});
+
+test('sauvegarde abîmée et stockage en lecture seule : valeurs par défaut, pas d\'exception', () => {
+  const st = memStore({ [KEY]: '{abîmé' }); st.setItem = () => { throw new Error('lecture seule'); }; st.removeItem = () => { throw new Error('lecture seule'); };
+  assert.deepEqual(load(st), defaults());
+});
+
+test('migrate ne modifie pas l\'objet lu, et chaque chargement rend un objet neuf', () => {
+  const d = defaults(); const copy = structuredClone(d);
+  migrate(d); assert.deepEqual(d, copy);
+  const a = load(memStore()), b = load(memStore());
+  a.layers.mw = false; assert.equal(b.layers.mw, true); assert.equal(defaults().layers.mw, true);
+});
+
+test('valeurs limites du lieu : pôles et antiméridien acceptés, NaN et nom vide refusés', () => {
+  const ok = p => isValid({ ...defaults(), place: p });
+  assert.ok(ok({ name: 'Pôle', lat: 90, lon: 180 })); assert.ok(ok({ name: 'Sud', lat: -90, lon: -180 }));
+  assert.ok(!ok({ name: '', lat: 0, lon: 0 })); assert.ok(!ok({ name: 'x', lat: NaN, lon: 0 })); assert.ok(!ok({ name: 'x', lat: '4', lon: 0 }));
+  assert.ok(!ok({ name: 'x'.repeat(81), lat: 0, lon: 0 }));
+});
+
+test('sauvegarde illisible à cause d\'un type inattendu (null, nombre, chaîne)', () => {
+  for (const b of ['null', '42', '"texte"', 'true']) assert.equal(parse(b), null, b);
+  assert.equal(parse(null), null);
+});
