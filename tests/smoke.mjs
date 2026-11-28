@@ -99,7 +99,7 @@ async function fps(page, ms = 2000) {
 try {
   await waitServer();
   mkdirSync(SHOTS, { recursive: true });
-  const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
+  const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required', '--enable-unsafe-swiftshader'] });
   for (const prof of PROFILES) {
     if (only && !prof.name.includes(only)) continue;
     console.log(`▶ ${prof.name}`);

@@ -1,15 +1,16 @@
 {
   "name": "kevsmos",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node tools/serve.mjs",
-    "test": "npm run types && npm run unit && npm run smoke && npm run partie",
+    "test": "npm run types && npm run unit && npm run smoke && npm run partie && npm run capteurs",
     "types": "tsc -p .",
     "unit": "node --test \"tests/unit/*.test.mjs\"",
     "smoke": "node tests/smoke.mjs",
-    "partie": "node tests/partie.mjs"
+    "partie": "node tests/partie.mjs",
+    "capteurs": "node tests/capteurs.mjs"
   },
   "devDependencies": {
     "playwright": "1.63.0",

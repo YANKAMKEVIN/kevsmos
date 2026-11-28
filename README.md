@@ -20,8 +20,17 @@ Les modules JavaScript ne s'ouvrent pas en `file://` : lancez `npm start` puis o
 ## Technique
 
 - Modules ES sans étape de construction, dans `src/`. three.js (WebGL), Astronomy Engine et satellite.js sont dans `lib/`.
-- `src/astro.js` et `src/catalog.js` : calculs du ciel et catalogue, sans DOM ni WebGL, testés sous Node. `src/scene.js` : rendu WebGL ; `src/labels.js`, `src/controls.js`, `src/pick.js`, `src/search.js`, `src/panels.js`, `src/timebar.js`, `src/sats.js` : interface.
+- `src/astro.js`, `src/catalog.js`, `src/searchCore.js`, `src/places.js` et `src/loop.js` : calculs du ciel, catalogue, recherche, lieux et rythme du rendu, sans DOM ni WebGL, testés sous Node. `src/scene.js` : rendu WebGL ; `src/labels.js`, `src/controls.js`, `src/pick.js`, `src/search.js`, `src/panels.js`, `src/timebar.js`, `src/sats.js` : interface.
 - Typage `// @ts-check` et JSDoc, vérifié par `npm run types` (TypeScript strict).
+
+## Économie d'énergie (mobile)
+
+- Densité de pixels plafonnée : 2 sur ordinateur, 1,5 sur écran tactile (`src/loop.js`).
+- Rendu à la demande : pleine cadence quand la caméra, le temps ou la boussole bougent ; sinon 10 images par seconde (le scintillement des étoiles), ou une par seconde si le système demande moins d'animations.
+- Onglet caché : la boucle s'arrête complètement et repart au retour.
+- Aucune allocation par image dans la boucle (vecteurs réutilisés) ; boussole et inertie au même rythme quelle que soit la cadence.
+- Poids au démarrage : three.js r159 (650 Ko, ~165 Ko compressé par GitHub Pages), Astronomy Engine (114 Ko), satellite.js (22 Ko), catalogue (220 Ko, préchargé en parallèle). Un test garde ces poids sous surveillance. Passer à la version module de three.js demanderait une étape de construction : écarté pour garder le déploiement GitHub Pages sans construction.
+- Sans WebGL, l'accueil le dit clairement au lieu d'afficher une page vide.
 
 ## Visuels
 
@@ -37,11 +46,14 @@ Le lieu et les calques sont gardés dans `localStorage`, clé `kevsmos.sauvegard
 
 ```bash
 npm install
-npx playwright install chromium
+npx playwright install chromium   # une fois
 npm run types    # typage
-npm run unit     # calculs du ciel (Étoile polaire, Soleil, lever et coucher), catalogue, fiches, satellites, sauvegarde
+npm run unit     # positions comparées aux références (Meeus, Hipparcos, saisons et lunes 2026), lever et coucher,
+                 # coordonnées, satellites (TLE figés), recherche, lieux, fiches, sauvegarde, rythme du rendu
 npm run smoke    # fumée sur ordinateur, iPhone SE et Pixel 7
 npm run partie   # parcours complet à une date fixe : recherche, visée, toucher une planète, lieu, calques, temps, rechargement, iPhone SE
+npm run capteurs # Pixel 7 au doigt sans boussole et position refusée, position acceptée, boussole simulée ou refusée,
+                 # ciel réellement dessiné, rendu à la demande, onglet caché, navigateur sans WebGL
 npm test         # tout
 ```
 

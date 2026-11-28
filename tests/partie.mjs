@@ -51,7 +51,7 @@ const cam = page => page.evaluate(() => ({ yaw: __ks.etat.yaw, pitch: __ks.etat.
 const saved = page => page.evaluate(k => JSON.parse(localStorage.getItem(k) || 'null'), KEY);
 const angle = (a, b) => Math.abs(((a - b + 540) % 360) - 180);
 
-const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });  // mêmes réglages que la fumée
+const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required', '--enable-unsafe-swiftshader'] });  // mêmes réglages que la fumée
 try {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, timezoneId: 'Europe/Paris' });
   let page = await open(ctx);

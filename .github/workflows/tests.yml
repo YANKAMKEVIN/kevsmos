@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   unit:
-    name: Types et tests unitaires (ciel, catalogue, fiches, satellites, sauvegarde)
+    name: Types et tests unitaires (positions de référence, lever et coucher, satellites, recherche, sauvegarde, rendu)
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -28,7 +28,7 @@ jobs:
       - run: npm run unit
 
   navigateur:
-    name: Fumée (ordinateur, iPhone SE, Pixel 7) et parcours complet
+    name: Fumée, parcours complet, capteurs et mobile (Chromium, WebGL logiciel)
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -40,6 +40,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run smoke
       - run: npm run partie
+      - run: npm run capteurs
       - name: Captures
         if: always()
         uses: actions/upload-artifact@v4
