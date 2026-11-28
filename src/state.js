@@ -1,9 +1,10 @@
 // @ts-check
-const place0=prefs.place||defaultPlace();
 /** État mutable partagé : lieu, catalogue, temps, caméra, sélection. */
 import { prefs } from './save.js';
 import { A, V3 } from './util.js';
 import { defaultPlace } from './places.js';
+
+const place0=prefs.place||defaultPlace();
 
 export const etat = {
   place: place0,

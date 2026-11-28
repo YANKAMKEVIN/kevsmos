@@ -23,6 +23,12 @@ export function parseCatalog(){
 }
 const GEN={And:'d’Andromède',Ori:'d’Orion',UMa:'de la Grande Ourse',UMi:'de la Petite Ourse',Cas:'de Cassiopée',Cyg:'du Cygne',Lyr:'de la Lyre',Aql:'de l’Aigle',Sco:'du Scorpion',Sgr:'du Sagittaire',Leo:'du Lion',Tau:'du Taureau',Gem:'des Gémeaux',CMa:'du Grand Chien',Cru:'de la Croix du Sud',Cen:'du Centaure',Peg:'de Pégase',Per:'de Persée',Aur:'du Cocher',Boo:'du Bouvier',Vir:'de la Vierge',Her:'d’Hercule',Dra:'du Dragon',Cep:'de Céphée'};
 function gen(c){return GEN[c]||('· '+consName(c))}
+/** Tout ce qu'on peut chercher (sauf les stations, ajoutées quand leurs orbites arrivent) : astres du système solaire,
+ * étoiles nommées, 88 constellations, objets de Messier. @param {any[]} bodies @returns {{o:any,t:string,s:string}[]} */
+export function searchEntries(bodies){return[...bodies.map(b=>({o:b,t:b.fr,s:b.id==='Sun'?'Étoile':b.id==='Moon'?'Satellite naturel':'Planète'})),
+  ...etat.starObjs.filter(s=>s.proper).map(s=>({o:s,t:s.name,s:'Étoile · '+consName(s.c)})),
+  ...Object.values(etat.consById).map(c=>({o:{...c,type:'cons'},t:consName(c.id),s:'Constellation · '+c.la})),
+  ...etat.messier.map(m=>({o:m,t:m.name,s:(DSO_T[m.t]||'Galaxie')+(MES_FR[m.id]?' · '+m.id:'')}))]}
 export function objWorld(o){if(o.type==='body'||o.type==='sat')return o.world;if(o.type==='cons')return wv(o.eq).clone();return wv(o.eq).clone()}
 function fact(i,b){return`<div class="fact"><i>${esc(i)}</i><b>${esc(b)}</b></div>`}
 export function describe(o){const w=objWorld(o),aa=altAz(w);let title='',kind='',text='',facts='';
@@ -32,7 +38,7 @@ export function describe(o){const w=objWorld(o),aa=altAz(w);let title='',kind=''
     else if(o.id==='Moon'){const ph=A.MoonPhase(T),il=A.Illumination('Moon',T);let full=null;try{full=A.SearchMoonPhase(180,T,40).date}catch(e){}
       kind=phaseName(ph);text=TXT.bodies.Moon;facts=pos+fact('Éclairée',nf(il.phase_fraction*100)+' %')+fact('Distance',nf(Math.round(o.dist*149597.8707)*1000)+' km')+(rs?fact('Lever',fmtDay(rs.r))+fact('Coucher',fmtDay(rs.s)):'')+(full?fact('Prochaine pleine lune',full.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})):'')}
     else{kind='Planète';text=TXT.bodies[o.id]||'';const km=o.dist*149597870.7,lt=o.dist*499/60;
-      facts=pos+fact('Éclat',(o.mag<0?'−':'')+nf(Math.abs(o.mag),1))+fact('Distance',km>1e9?nf(km/1e9,2)+' milliard de km':nf(km/1e6)+' millions de km')+fact('Sa lumière met',lt>60?nf(lt/60,1)+' h':nf(lt)+' min')+fact('Dans',consName(A.Constellation(o.ra/15,o.dec).symbol))+(rs?fact('Lever',fmtDay(rs.r))+fact('Coucher',fmtDay(rs.s)):'')}
+      facts=pos+fact('Éclat',(o.mag<0?'−':'')+nf(Math.abs(o.mag),1))+fact('Distance',km>1e9?nf(km/1e9,2)+(km>=2e9?' milliards de km':' milliard de km'):nf(km/1e6)+' millions de km')+fact('Sa lumière met',lt>60?nf(lt/60,1)+' h':nf(lt)+' min')+fact('Dans',consName(A.Constellation(o.ra/15,o.dec).symbol))+(rs?fact('Lever',fmtDay(rs.r))+fact('Coucher',fmtDay(rs.s)):'')}
     if(o.id==='Sun'&&o.alt>-2)text+=' Le jour, les étoiles sont toujours là, simplement noyées dans la lumière du ciel.'}
   else if(o.type==='star'){title=o.name||('Étoile de magnitude '+nf(o.mag,1));kind=`Étoile ${colorName(o.bv)} · ${consName(o.c)}`;text=TXT.stars[o.proper]||`Une étoile ${colorName(o.bv)} de la constellation ${consName(o.c)}.`+(o.bv>1.3?' Sa couleur trahit une surface plus froide que celle du Soleil.':o.bv<.1?' Sa couleur bleutée trahit une étoile bien plus chaude que le Soleil.':'');
     facts=pos+fact('Éclat',(o.mag<0?'−':'')+nf(Math.abs(o.mag),2))}

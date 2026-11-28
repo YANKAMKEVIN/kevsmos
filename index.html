@@ -11,6 +11,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="preload" href="data/sky.json" as="fetch" crossorigin>
+<link rel="modulepreload" href="src/main.js">
 </head>
 <body>
 <canvas id="c" aria-label="Le ciel au-dessus de toi"></canvas>
@@ -81,6 +83,12 @@
 <script src="lib/astronomy.browser.min.js"></script>
 <script src="lib/satellite.min.js"></script>
 <script src="data/histoires.js"></script>
-<script type="module" src="src/main.js"></script>
+<script>
+// Sans WebGL, le ciel ne peut pas être dessiné : on le dit sur l'accueil au lieu de laisser une page muette.
+(function(){var ok=false;try{var c=document.createElement('canvas'),g=c.getContext('webgl2')||c.getContext('webgl');ok=!!g;var x=g&&g.getExtension('WEBGL_lose_context');if(x)x.loseContext()}catch(e){}
+  if(ok){var s=document.createElement('script');s.type='module';s.src='src/main.js';document.body.appendChild(s);return}
+  document.documentElement.classList.add('nogl');
+  document.getElementById('introNote').textContent='Ton navigateur ne peut pas dessiner le ciel en 3D (WebGL est désactivé ou indisponible). Essaie avec un navigateur récent, ou active l’accélération graphique dans ses réglages.';})();
+</script>
 </body>
 </html>
